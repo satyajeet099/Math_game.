@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<!-- saved from url=(0032)http://127.0.0.1:5500/index.html -->
+<html lang="hi"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kids Math Game – 50 Questions</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            /* slate-900 */
+            --card: #111827;
+            /* gray-900 */
+            --ink: #e5e7eb;
+            /* gray-200 */
+            --muted: #94a3b8;
+            /* slate-400 */
+            --accent: #22c55e;
+            /* green-500 */
+            --accent-2: #3b82f6;
+            /* blue-500 */
+            --warn: #f59e0b;
+            /* amber-500 */
+            --bad: #ef4444;
+            /* red-500 */
+            --good: #10b981;
+            /* emerald-500 */
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(180deg, #0b1220, var(--bg));
+            color: var(--ink);
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 16px;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(17, 24, 39, .85);
+            backdrop-filter: blur(6px);
+            border: 1px solid #1f2937;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .45);
+        }
+
+        header {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #1f2937;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        header .pill {
+            margin-left: auto;
+            background: #111827;
+            border: 1px solid #1f2937;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .main {
+            padding: 20px;
+            display: grid;
+            gap: 16px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .progress {
+            height: 10px;
+            background: #0b1020;
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid #1f2937;
+        }
+
+        .progress>div {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            transition: width .35s ease;
+        }
+
+        .card {
+            background: #0b1020;
+            border: 1px solid #1f2937;
+            border-radius: 14px;
+            padding: 16px;
+        }
+
+        .prompt {
+            font-size: clamp(24px, 4vw, 42px);
+            text-align: center;
+            letter-spacing: .5px;
+        }
+
+        .sub {
+            text-align: center;
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 6px;
+        }
+
+        .answer-wrap {
+            display: grid;
+            grid-template-columns: 1fr 140px;
+            gap: 12px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 20px;
+            border-radius: 12px;
+            border: 1px solid #1f2937;
+            outline: none;
+            background: #0b1220;
+            color: var(--ink);
+        }
+
+        button {
+            cursor: pointer;
+            border: 1px solid #1f2937;
+            background: #0b1220;
+            color: var(--ink);
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+
+        button.primary {
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            border: none;
+            color: white;
+        }
+
+        button.ghost {
+            background: #0b1020;
+        }
+
+        button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .badge {
+            font-size: 12px;
+            color: #e2e8f0;
+            background: #0b1220;
+            border: 1px solid #1f2937;
+            padding: 6px 10px;
+            border-radius: 999px;
+        }
+
+        .statbar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .stat {
+            background: #0b1020;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .stat .big {
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .stat .lbl {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .result {
+            text-align: center;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .result.ok {
+            background: rgba(16, 185, 129, .15);
+            border: 1px solid rgba(16, 185, 129, .35);
+        }
+
+        .result.no {
+            background: rgba(239, 68, 68, .15);
+            border: 1px solid rgba(239, 68, 68, .35);
+        }
+
+        .footer {
+            padding: 12px 20px;
+            border-top: 1px solid #1f2937;
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* simple confetti */
+        .confetti {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .confetti span {
+            position: absolute;
+            width: 8px;
+            height: 14px;
+            opacity: 0.9;
+            animation: fall 1.8s linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .hint {
+            color: #d1fae5;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .tiny {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .divider {
+            height: 1px;
+            background: #1f2937;
+            margin: 6px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <header>
+            <h1>🧠 Kids Math Game – 50 Qs</h1>
+            <div class="pill" id="levelPill">Level 1 · आसान</div>
+        </header>
+        <div class="main">
+            <div class="row">
+                <div class="progress">
+                    <div id="progressBar" style="width: 0%;"></div>
+                </div>
+                <div><span class="badge" id="qCounter">Q 1 / 50</span></div>
+            </div>
+
+            <div class="card">
+                <div class="prompt" id="prompt">3 + 2 = ?</div>
+                <div class="sub" id="sub">संकेत (Hint) लेने के लिए नीचे बटन दबाएँ</div>
+                <div class="hint" id="hint" aria-live="polite"></div>
+                <div class="divider"></div>
+                <div class="answer-wrap">
+                    <input id="answer" type="number" inputmode="numeric" placeholder="अपना उत्तर लिखें">
+                    <button class="primary" id="submitBtn">✅ सबमिट</button>
+                </div>
+                <div style="height:8px"></div>
+                <div class="toolbar">
+                    <button id="hintBtn" class="ghost">💡 Hint</button>
+                    <button id="skipBtn" class="ghost">⏭️ Skip (<span id="skipLeft">3</span>)</button>
+                    <button id="speakBtn" class="ghost">🔊 बोलकर सुनें</button>
+                </div>
+                <div style="height:8px"></div>
+                <div id="feedback" class="result ok hidden">✔️ सही! उत्तर 361</div>
+            </div>
+
+            <div class="statbar">
+                <div class="stat">
+                    <div class="big" id="score">0</div>
+                    <div class="lbl">Score</div>
+                </div>
+                <div class="stat">
+                    <div class="big" id="streak">0🔥</div>
+                    <div class="lbl">Streak</div>
+                </div>
+                <div class="stat">
+                    <div class="big" id="accuracy">100%</div>
+                    <div class="lbl">Accuracy</div>
+                </div>
+                <div class="stat">
+                    <div class="big" id="timeSpent">09:37</div>
+                    <div class="lbl">Time</div>
+                </div>
+                <div class="stat">
+                    <div class="big" id="level">1</div>
+                    <div class="lbl">Level</div>
+                </div>
+            </div>
+
+            <div class="card hidden" id="finalCard">
+                <h2 style="margin:0 0 8px 0;">🎉 Game Over! Summary</h2>
+                <p class="tiny">50 प्रश्न पूरे हो गए</p>
+                <ul>
+                    <li>Final Score: <strong id="fScore">849</strong></li>
+                    <li>Accuracy: <strong id="fAcc">96%</strong></li>
+                    <li>Total Time: <strong id="fTime">04:33</strong></li>
+                    <li>Best Streak: <strong id="fStreak">22</strong></li>
+                </ul>
+                <div class="divider"></div>
+                <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                    <input id="playerName" placeholder="अपना नाम लिखें (optional)" style="flex:1; padding:10px; border-radius:10px; border:1px solid #1f2937; background:#0b1220; color:var(--ink)">
+                    <button id="saveScore" class="primary">💾 Save Score</button>
+                    <button id="restart" class="">🔁 Play Again</button>
+                </div>
+            </div>
+
+            <div class="card" id="boardCard">
+                <h3 style="margin:0 0 8px 0;">🏆 Top Scores (Local)</h3>
+                <ol id="scoreBoard" style="margin:0; padding-left: 18px;"><li>अभी कोई स्कोर सेव नहीं है</li></ol>
+                <div class="tiny">यह स्कोर आपके ब्राउज़र में सेव रहता है (offline)</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="tiny">मोड: जोड़, घटाना, गुणा, भाग, square (²), cube (³) · आसान → कठिन अपने आप</div>
+            <div class="tiny">Unique Features: Smart Hint, 3 Skips, Speaking Qs, Streak Bonus</div>
+        </div>
+    </div>
+
+    <div class="confetti" id="confetti"></div>
+
+    <script>
+        // ====== Game Config ======
+        const TOTAL_QS = 50;
+        const MAX_SKIPS = 3;
+
+        // Difficulty tiers by question index (1..50)
+        function getTier(qNum) {
+            if (qNum <= 10) return { name: 'आसान', level: 1, range: 10, ops: ['+', '-'] };
+            if (qNum <= 20) return { name: 'आसान+', level: 2, range: 20, ops: ['+', '-', '×'] };
+            if (qNum <= 30) return { name: 'मध्यम', level: 3, range: 30, ops: ['+', '-', '×', '÷'] };
+            if (qNum <= 40) return { name: 'मध्यम+', level: 4, range: 50, ops: ['+', '-', '×', '÷', 'sq'] };
+            if (qNum <= 45) return { name: 'कठिन', level: 5, range: 80, ops: ['+', '-', '×', '÷', 'sq'] };
+            return { name: 'कठिन+', level: 6, range: 120, ops: ['+', '-', '×', '÷', 'sq', 'cb'] };
+        }
+
+        // ====== State ======
+        let state = {
+            qNum: 1,
+            correct: 0,
+            wrong: 0,
+            streak: 0,
+            bestStreak: 0,
+            score: 0,
+            skips: MAX_SKIPS,
+            startTime: Date.now(),
+            speaking: false,
+            current: null,
+        };
+
+        const els = {
+            progressBar: document.getElementById('progressBar'),
+            qCounter: document.getElementById('qCounter'),
+            prompt: document.getElementById('prompt'),
+            sub: document.getElementById('sub'),
+            hint: document.getElementById('hint'),
+            answer: document.getElementById('answer'),
+            submitBtn: document.getElementById('submitBtn'),
+            hintBtn: document.getElementById('hintBtn'),
+            skipBtn: document.getElementById('skipBtn'),
+            skipLeft: document.getElementById('skipLeft'),
+            speakBtn: document.getElementById('speakBtn'),
+            feedback: document.getElementById('feedback'),
+            score: document.getElementById('score'),
+            streak: document.getElementById('streak'),
+            accuracy: document.getElementById('accuracy'),
+            timeSpent: document.getElementById('timeSpent'),
+            level: document.getElementById('level'),
+            levelPill: document.getElementById('levelPill'),
+            finalCard: document.getElementById('finalCard'),
+            fScore: document.getElementById('fScore'),
+            fAcc: document.getElementById('fAcc'),
+            fTime: document.getElementById('fTime'),
+            fStreak: document.getElementById('fStreak'),
+            playerName: document.getElementById('playerName'),
+            saveScore: document.getElementById('saveScore'),
+            restart: document.getElementById('restart'),
+            scoreBoard: document.getElementById('scoreBoard'),
+            boardCard: document.getElementById('boardCard'),
+            confetti: document.getElementById('confetti'),
+        };
+
+        // ====== Utils ======
+        function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+        function speak(text) {
+            if (!('speechSynthesis' in window)) return;
+            if (state.speaking) window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'hi-IN';
+            state.speaking = true;
+            u.onend = () => state.speaking = false;
+            window.speechSynthesis.speak(u);
+        }
+
+        function fmtTime(ms) {
+            const s = Math.floor(ms / 1000);
+            const mm = String(Math.floor(s / 60)).padStart(2, '0');
+            const ss = String(s % 60).padStart(2, '0');
+            return `${mm}:${ss}`;
+        }
+
+        function updateHUD() {
+            const total = state.correct + state.wrong + (state.current ? 1 : 0) - 1; // running count for progress
+            const pct = ((state.qNum - 1) / TOTAL_QS) * 100;
+            els.progressBar.style.width = pct + '%';
+            els.qCounter.textContent = `Q ${state.qNum} / ${TOTAL_QS}`;
+            const acc = (state.correct + state.wrong) ? Math.round((state.correct / (state.correct + state.wrong)) * 100) : 100;
+            els.accuracy.textContent = acc + '%';
+            els.timeSpent.textContent = fmtTime(Date.now() - state.startTime);
+            els.score.textContent = state.score;
+            els.streak.textContent = state.streak + '🔥';
+            const tier = getTier(state.qNum);
+            els.level.textContent = tier.level;
+            els.levelPill.textContent = `Level ${tier.level} · ${tier.name}`;
+            els.skipLeft.textContent = state.skips;
+        }
+
+        function makeConfetti() {
+            const colors = ['#22c55e', '#3b82f6', '#a78bfa', '#f59e0b', '#ef4444', '#10b981'];
+            for (let i = 0; i < 30; i++) {
+                const s = document.createElement('span');
+                s.style.left = randInt(0, 100) + 'vw';
+                s.style.top = '-5vh';
+                s.style.background = colors[randInt(0, colors.length - 1)];
+                s.style.transform = `translateY(0) rotate(0deg)`;
+                s.style.animationDelay = (i * 0.02) + 's';
+                els.confetti.appendChild(s);
+                setTimeout(() => s.remove(), 2000);
+            }
+        }
+
+        // Generate a question object: {text, answer, hint, speak}
+        function genQuestion(qNum) {
+            const { range, ops } = getTier(qNum);
+            let op = ops[randInt(0, ops.length - 1)];
+
+            // Slightly bias to include squares/cubes when available
+            if (ops.includes('sq') && Math.random() < 0.25) op = 'sq';
+            if (ops.includes('cb') && Math.random() < 0.2) op = 'cb';
+
+            let a, b, text, ans, hint = '';
+
+            if (op === '+') {
+                a = randInt(0, range); b = randInt(0, range);
+                ans = a + b; text = `${a} + ${b} = ?`;
+                hint = `${a} + ${b} मतलब ${a} के बाद ${b} स्टेप आगे बढ़ो`;
+            } else if (op === '-') {
+                a = randInt(0, range); b = randInt(0, range);
+                if (a < b) [a, b] = [b, a];
+                ans = a - b; text = `${a} − ${b} = ?`;
+                hint = `पहले ${a}, फिर ${b} पीछे जाओ`;
+            } else if (op === '×') {
+                const maxA = qNum <= 20 ? 10 : (qNum <= 40 ? 12 : Math.min(20, Math.floor(range / 2)));
+                a = randInt(0, maxA); b = randInt(0, maxA);
+                ans = a * b; text = `${a} × ${b} = ?`;
+                hint = `${a} को ${b} बार जोड़ो (repeated addition)`;
+            } else if (op === '÷') {
+                // ensure clean division
+                const maxA = Math.max(3, Math.min(range, 12 + Math.floor(qNum / 2)));
+                b = randInt(1, Math.max(2, Math.min(12, maxA)));
+                a = b * randInt(0, Math.min(12, maxA));
+                ans = b === 0 ? 0 : (a / b);
+                text = `${a} ÷ ${b} = ?`;
+                hint = `${a} को ${b} बराबर हिस्सों में बाँटो`;
+            } else if (op === 'sq') {
+                a = randInt(2, Math.min(20, Math.max(6, Math.floor(range / 2))));
+                ans = a * a; text = `${a}² (square) = ?`;
+                hint = `${a} × ${a}`;
+            } else if (op === 'cb') {
+                a = randInt(2, Math.min(12, Math.max(5, Math.floor(range / 4))));
+                ans = a * a * a; text = `${a}³ (cube) = ?`;
+                hint = `${a} × ${a} × ${a}`;
+            }
+
+            return {
+                text,
+                answer: ans,
+                hint,
+                speak: text.replace('²', ' का स्क्वेयर ').replace('³', ' का क्यूब ')
+            };
+        }
+
+        function setQuestion() {
+            els.hint.textContent = '';
+            els.feedback.classList.add('hidden');
+            state.current = genQuestion(state.qNum);
+            els.prompt.textContent = state.current.text;
+            els.sub.textContent = 'संकेत (Hint) लेने के लिए नीचे बटन दबाएँ';
+            els.answer.value = '';
+            els.answer.focus();
+            updateHUD();
+        }
+
+        function awardPoints(isCorrect) {
+            if (isCorrect) {
+                state.streak++;
+                state.bestStreak = Math.max(state.bestStreak, state.streak);
+                const tier = getTier(state.qNum);
+                let gain = 5 * tier.level; // harder -> more points
+                if (state.streak && state.streak % 5 === 0) { gain += 10; makeConfetti(); }
+                state.score += gain;
+            } else {
+                state.streak = 0;
+                state.score = Math.max(0, state.score - 3);
+            }
+        }
+
+        function submit() {
+            const val = els.answer.value.trim();
+            if (val === '') return;
+            const guess = Number(val);
+            const ok = (guess === state.current.answer);
+            awardPoints(ok);
+            if (ok) state.correct++; else state.wrong++;
+
+            els.feedback.textContent = ok ? `✔️ सही! उत्तर ${state.current.answer}` : `❌ ग़लत! सही उत्तर ${state.current.answer}`;
+            els.feedback.className = 'result ' + (ok ? 'ok' : 'no');
+            els.feedback.classList.remove('hidden');
+
+            // next
+            if (state.qNum >= TOTAL_QS) {
+                finish();
+            } else {
+                state.qNum++;
+                setTimeout(setQuestion, 700);
+            }
+        }
+
+        function finish() {
+            const totalTime = Date.now() - state.startTime;
+            els.fScore.textContent = state.score;
+            const acc = (state.correct + state.wrong) ? Math.round((state.correct / (state.correct + state.wrong)) * 100) : 100;
+            els.fAcc.textContent = acc + '%';
+            els.fTime.textContent = fmtTime(totalTime);
+            els.fStreak.textContent = state.bestStreak;
+            els.finalCard.classList.remove('hidden');
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            makeConfetti();
+        }
+
+        function giveHint() {
+            if (!state.current) return;
+            const { text, answer, hint } = state.current;
+            // smart hint by operation detection
+            let h = hint;
+            if (text.includes('+')) {
+                const [a, b] = text.split('+').map(s => parseInt(s));
+                if (!isNaN(a) && !isNaN(b)) h += ` → ${a} + ${b} = ${a + b}`;
+            }
+            els.hint.textContent = '💡 ' + h;
+        }
+
+        function skip() {
+            if (state.skips <= 0) return;
+            state.skips--;
+            els.feedback.classList.add('hidden');
+            if (state.qNum >= TOTAL_QS) { finish(); return; }
+            state.qNum++;
+            setQuestion();
+        }
+
+        function saveScore() {
+            const rec = {
+                name: els.playerName.value.trim() || 'Player',
+                score: state.score,
+                acc: (state.correct + state.wrong) ? Math.round((state.correct / (state.correct + state.wrong)) * 100) : 100,
+                time: Date.now() - state.startTime,
+                streak: state.bestStreak,
+                when: new Date().toLocaleString(),
+            };
+            const key = 'kids-math-game-scores-v1';
+            const arr = JSON.parse(localStorage.getItem(key) || '[]');
+            arr.push(rec);
+            arr.sort((a, b) => b.score - a.score || a.time - b.time);
+            localStorage.setItem(key, JSON.stringify(arr.slice(0, 10)));
+            renderBoard();
+        }
+
+        function renderBoard() {
+            const key = 'kids-math-game-scores-v1';
+            const arr = JSON.parse(localStorage.getItem(key) || '[]');
+            els.scoreBoard.innerHTML = '';
+            if (!arr.length) {
+                els.scoreBoard.innerHTML = '<li>अभी कोई स्कोर सेव नहीं है</li>';
+                return;
+            }
+            arr.forEach((r, i) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${i + 1}. ${r.name}</strong> — ${r.score} pts · ${r.acc}% · ${fmtTime(r.time)} · 🔥${r.streak} <span class="tiny">(${r.when})</span>`;
+                els.scoreBoard.appendChild(li);
+            });
+        }
+
+        function restart() {
+            state = {
+                qNum: 1, correct: 0, wrong: 0, streak: 0, bestStreak: 0,
+                score: 0, skips: MAX_SKIPS, startTime: Date.now(), speaking: false, current: null,
+            };
+            els.finalCard.classList.add('hidden');
+            setQuestion();
+        }
+
+        // ====== Wire up ======
+        els.submitBtn.addEventListener('click', submit);
+        els.answer.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+        els.hintBtn.addEventListener('click', giveHint);
+        els.skipBtn.addEventListener('click', skip);
+        els.saveScore.addEventListener('click', saveScore);
+        els.restart.addEventListener('click', restart);
+        els.speakBtn.addEventListener('click', () => { if (state.current) speak(state.current.speak); });
+
+        // timer HUD updater
+        setInterval(() => { els.timeSpent.textContent = fmtTime(Date.now() - state.startTime); }, 1000);
+
+        // boot
+        renderBoard();
+        setQuestion();
+    </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+
+
+</body></html>
